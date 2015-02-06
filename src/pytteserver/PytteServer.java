@@ -13,18 +13,24 @@ import java.io.IOException;
  */
 public class PytteServer {
 
-    private static int port;
-    private static TcpServer server;
+    public static void main(String[] args) throws IOException, NumberFormatException {
+        int port = 8080;
 
-    public static void main(String[] args) throws IOException {
-        port = Integer.parseInt(args[0]);
-        System.out.println(port);
         if (args.length > 0) {
-            TcpServer server = new TcpServer(port);
-             server.startServer();
+            try {
+                port = Integer.valueOf(args[0]);
+            } catch (NumberFormatException nfe) {
+                System.out.println(args[0] + " Is not a valid integer, try " + port + " Instead");
+            }
         }
-        
-       
+
+        TcpServer server = new TcpServer();
+        try{
+               server.startServer(port);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 
