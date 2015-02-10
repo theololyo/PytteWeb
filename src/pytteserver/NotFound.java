@@ -18,6 +18,10 @@ public class NotFound extends Response {
         this._message = message;
         this.RESPONSE_CODE = RESPONSE_CODE;
     }
+    
+     public NotFound(String path) {
+         this.RESPONSE_CODE = 404;
+    }
 
     public String getResponseMessage() {
         return _message;
@@ -31,6 +35,11 @@ public class NotFound extends Response {
     @Override
     public int getResponseCode() {
         return RESPONSE_CODE;
+    }
+
+    public byte[] getResponseFile(String path) {
+        
+      return null;  
     }
 
 }

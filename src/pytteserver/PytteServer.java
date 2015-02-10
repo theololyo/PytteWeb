@@ -5,6 +5,7 @@
  */
 package pytteserver;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,6 +17,8 @@ public class PytteServer {
     public static void main(String[] args) throws IOException, NumberFormatException {
         int port = 8080;
 
+ 
+
         if (args.length > 0) {
             try {
                 port = Integer.valueOf(args[0]);
@@ -25,10 +28,9 @@ public class PytteServer {
         }
 
         TcpServer server = new TcpServer();
-        try{
-               server.startServer(port);
-        }
-        catch(Exception e){
+        try {
+            server.startServer(port);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

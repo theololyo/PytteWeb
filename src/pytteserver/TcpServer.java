@@ -5,27 +5,13 @@
  */
 package pytteserver;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,8 +25,10 @@ public class TcpServer {
     String _request;
     String _method;
     String[] _splitter;
+    Filter _filter;
+    FileHandler _fh;
 
-    public void startServer(int port) throws IOException {
+    public void startServer(int port) throws IOException, Exception {
 
         InetAddress addr = InetAddress.getByName("127.0.0.1");
         serverSocket = new ServerSocket(port);
@@ -55,18 +43,15 @@ public class TcpServer {
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientHandlerSocket.getInputStream()));
 
             _request = reader.readLine();
-            _splitter = _request.split(" ");
-            Path file = Paths.get("index.html");
-            try {
-                if (_splitter[0].equals("GET") && _splitter[1].contains((CharSequence) "\\r\\n")) {
-                    writer.write(Files.readAllBytes(file));
-                    writer.writeBytes("\r\n");
-                } else {
-                    writer.writeBytes("FEL" + "\n");
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                writer.writeBytes("Invalid request" + "\r\n");
-            }
+            _filter = new Filter(_request);
+            _filter.parseRequest();
+            
+            
+            
+     
+           
+          
+            
 
         }
 
