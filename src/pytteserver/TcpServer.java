@@ -46,7 +46,7 @@ public class TcpServer {
             _filter = new Filter(_request);
             _filter.parseRequest();
             
-            
+            writer.write(_fh.getDir("/src"));
             
      
            
