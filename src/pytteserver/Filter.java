@@ -33,10 +33,9 @@ public class Filter {
         if (validateRequest()) {
             _requestType = _request.split(" ")[0];
             _parsedString = _request.split(" ")[1].split("\\\\")[0];
-        }
-        
-        else{
-            _parsedString = "Invalid Request";
+            System.out.println(_parsedString);
+        } else {
+
         }
         return _parsedString;
     }
@@ -54,10 +53,5 @@ public class Filter {
         return _isValid;
 
     }
-    
-    public boolean isValidRequest(){
-        return _isValid;
-    }
-
 
 }

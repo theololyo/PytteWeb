@@ -5,15 +5,12 @@
  */
 package pytteserver;
 
+import com.sun.xml.internal.fastinfoset.util.CharArrayString;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
 
 /**
  *
@@ -21,55 +18,64 @@ import java.util.List;
  */
 public class FileHandler {
 
-    private String _path;
+    private String _requestPath;
     private String _pattern;
-    private String _rootPath;
+    private boolean _indexExists;
     File[] _fileArray;
-    File _rootFolder;
-    Path _index;
+    File _requestFile;
     byte[] _response;
+    String _rootPath = System.getProperty("user.dir");
 
-    public FileHandler() {
-        _rootPath = System.getProperty("user.dir");
-        _rootFolder = new File(System.getProperty("user.dir") + _path);
+    public FileHandler(String requestPath) throws IOException {
+        _requestFile = new File(_rootPath + requestPath);
+        _requestPath = _rootPath + requestPath;
+        _indexExists = findIndex();
+     
     }
 
-    public byte[] getIndex() throws IOException {
-        _fileArray = _rootFolder.listFiles();
+    private boolean findIndex() throws IOException {
+        boolean indexFound = false;
+        if (_requestFile.exists() && !_requestFile.getName().contains(new CharArrayString("index"))) {
+            _fileArray = _requestFile.listFiles();
 
-        for (int i = 0; i < _rootFolder.listFiles().length; i++) {
-            if (_fileArray[i].getName().startsWith("index.") && (_fileArray[i].getName().endsWith(".html") || _fileArray[i].getName().endsWith(".htm"))) {
+            for (int i = 0; i < _requestFile.listFiles().length; i++) {
+                if (_fileArray[i].getName().startsWith("index.") && _fileArray[i].getName().contains(new CharArrayString(".htm"))) {
+                    indexFound = true;
+                    _response = Files.readAllBytes(Paths.get(_fileArray[i].getPath()));
 
-                _response = Files.readAllBytes(Paths.get(_fileArray[i].getPath()));
-                
-            } else if (_fileArray[i].getName().startsWith("index.")) {
-                
-                _response = Files.readAllBytes(Paths.get(_fileArray[i].getPath()));
-                
-            } else {
+                } else if (_fileArray[i].getName().startsWith("index.")) {
+                    indexFound = true;
+                    _response = Files.readAllBytes(Paths.get(_fileArray[i].getPath()));
 
-                _response = getFile(_rootPath);
-
+                }
             }
+
+        } else {
 
         }
 
-        return _response;
+        return indexFound;
     }
 
-    public byte[] getFile(String path) throws IOException {
+    public byte[] getFile() throws IOException {
         String fileResult = "";
-        if (new File(_rootPath + path).exists() && new File(_rootPath + path).isDirectory()) {
-            _fileArray = new File(_rootPath + path).listFiles();
-            for (int j = 0; j < _fileArray.length; j++) {
-                fileResult = fileResult.concat(_fileArray[j].getName() + "\r\n");
+        if (_requestFile.exists() && _requestFile.isDirectory()) {
+            _fileArray = _requestFile.listFiles();
+            if (!_indexExists) {
+                for (int j = 0; j < _fileArray.length; j++) {
+                    fileResult = fileResult.concat(_fileArray[j].getName() + "\r\n");
+                }
             }
-        } else if (new File(_rootPath + path).exists() && new File(_rootPath + path).isFile()) {
-            Path file = Paths.get(_rootPath + path);
+            if (_indexExists) {
+                return _response;
+            }
+
+        } else if (_requestFile.exists() && _requestFile.isFile()) {
+            Path file = Paths.get(_requestPath);
             String decode = new String(Files.readAllBytes(file), "UTF-8");
             fileResult = decode;
 
-        } else {
+        } if (!_requestFile.exists()) {
             Path errorFile = Paths.get(_rootPath + "/error.html");
             return Files.readAllBytes(errorFile);
         }

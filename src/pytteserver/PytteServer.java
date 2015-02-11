@@ -1,34 +1,39 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pytteserver;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
+ * @author Theo Markovic
+ * @version 0.9ish
  *
- * @author Theo
+ * Parses and validates a supplied portnumber, starts initializes and starts a
+ * omni-listening TCP-socket
+ *
  */
 public class PytteServer {
 
-    public static void main(String[] args) throws IOException, NumberFormatException {
+    /**
+     * @param args a list of parameters sent in as run-flags
+     * @throws NumberFormatException if the argument, in this case portnumber is
+     * invalid
+     */
+    public static void main(String[] args) throws NumberFormatException {
         int port = 8080;
-
- 
-
         if (args.length > 0) {
             try {
-                port = Integer.valueOf(args[0]);
+                if (Integer.parseInt(args[0]) >= 4) {
+                    port = Integer.valueOf(args[0]);
+                } else {
+                    throw new NumberFormatException();
+                }
+
             } catch (NumberFormatException nfe) {
-                System.out.println(args[0] + " Is not a valid integer, try " + port + " Instead");
+                System.out.println("'" + args[0] + "'" + " Is not a valid portnumber or is reserved, starting server on " + port + " Instead");
             }
         }
 
-        TcpServer server = new TcpServer();
         try {
+            TcpServer server = new TcpServer();
             server.startServer(port);
         } catch (Exception e) {
             e.printStackTrace();
