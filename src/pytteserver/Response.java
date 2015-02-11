@@ -15,8 +15,9 @@ public abstract class Response {
     
     public abstract void setResponseMessage(String response);
 
-    
     public abstract int getResponseCode();
+    
+    public abstract byte[] getResponseFile(String path);
     
     
     
