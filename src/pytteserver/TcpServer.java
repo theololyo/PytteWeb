@@ -26,7 +26,7 @@ public class TcpServer {
     String _method;
     String[] _splitter;
     Filter _filter;
-    FileHandler _fh;
+    FileHandler _fh = new FileHandler();
 
     public void startServer(int port) throws IOException, Exception {
 
@@ -44,14 +44,9 @@ public class TcpServer {
 
             _request = reader.readLine();
             _filter = new Filter(_request);
-            _filter.parseRequest();
-            
-            writer.write(_fh.getDir("/src"));
-            
-     
-           
-          
-            
+
+            writer.write(_fh.getFile(_filter.parseRequest()));
+            writer.writeBytes("\r\n");
 
         }
 

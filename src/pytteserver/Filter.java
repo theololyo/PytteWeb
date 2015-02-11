@@ -21,7 +21,7 @@ public class Filter {
     private String _requestType;
     private boolean _isValid;
     private FileHandler _fh;
-    private String _path;
+    private String _parsedString;
 
     public Filter(String request) {
         _request = request;
@@ -29,17 +29,16 @@ public class Filter {
 
     }
 
-    public void parseRequest() {
+    public String parseRequest() {
         if (validateRequest()) {
             _requestType = _request.split(" ")[0];
-            _path = _request.split(" ")[1].split("\\\\")[0];
-            System.out.println(_path);
-            _fh = new FileHandler(_path);
-
-        } else {
-
+            _parsedString = _request.split(" ")[1].split("\\\\")[0];
         }
-
+        
+        else{
+            _parsedString = "Invalid Request";
+        }
+        return _parsedString;
     }
 
     private boolean validateRequest() {
@@ -55,9 +54,10 @@ public class Filter {
         return _isValid;
 
     }
-
-    private void requestFile() {
-
+    
+    public boolean isValidRequest(){
+        return _isValid;
     }
+
 
 }
