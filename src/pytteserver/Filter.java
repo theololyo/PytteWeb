@@ -1,57 +1,38 @@
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pytteserver;
-
-import com.sun.xml.internal.fastinfoset.util.CharArray;
-import java.lang.Exception;
-import java.lang.Throwable;
-import java.util.Arrays;
-
 /**
+ * Validates the given request and parses it into a path
  *
  * @author Markovic
  */
 public class Filter {
-
-    private String _request;
+    private final String _request;
     private String _requestType;
     private boolean _isValid;
-    private FileHandler _fh;
     private String _parsedString;
-
+    /**
+     * Constructs a new Filter
+     *
+     * @param request the request to be processed
+     */
     public Filter(String request) {
         _request = request;
         _isValid = false;
-
     }
-
+    /**
+     * Splits the whole HTTP-request into it's substantial parts
+     *
+     * @return returns the extracted path from the request
+     */
     public String parseRequest() {
         if (validateRequest()) {
+            System.out.println(_request);
             _requestType = _request.split(" ")[0];
-            _parsedString = _request.split(" ")[1].split("\\\\")[0];
-            System.out.println(_parsedString);
-        } else {
-
+            _parsedString = _request.split(" ")[1].split(" ")[0].replaceFirst("/", "");
         }
         return _parsedString;
     }
-
     private boolean validateRequest() {
-
-        if (_request.startsWith("GET") && _request.endsWith("\\r\\n")) {
-            _isValid = true;
-
-        } else {
-            _isValid = false;
-
-        }
-
+        _isValid = _request.startsWith("GET /");
         return _isValid;
-
     }
-
 }

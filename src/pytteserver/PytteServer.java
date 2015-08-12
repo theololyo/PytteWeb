@@ -1,7 +1,4 @@
 package pytteserver;
-
-import java.io.IOException;
-
 /**
  * @author Theo Markovic
  * @version 0.9ish
@@ -11,7 +8,6 @@ import java.io.IOException;
  *
  */
 public class PytteServer {
-
     /**
      * @param args a list of parameters sent in as run-flags
      * @throws NumberFormatException if the argument, in this case portnumber is
@@ -26,19 +22,15 @@ public class PytteServer {
                 } else {
                     throw new NumberFormatException();
                 }
-
             } catch (NumberFormatException nfe) {
                 System.out.println("'" + args[0] + "'" + " Is not a valid portnumber or is reserved, starting server on " + port + " Instead");
             }
         }
-
         try {
             TcpServer server = new TcpServer();
             server.startServer(port);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }
