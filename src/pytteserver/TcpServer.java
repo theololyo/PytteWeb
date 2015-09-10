@@ -33,7 +33,7 @@ public class TcpServer {
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientHandlerSocket.getInputStream()));
             _request = reader.readLine();
             System.out.println(_request);
-            new FileHandler(new Filter(_request).parseRequest()).getFile(writer);
+            new HttpRequestParser(_request, writer).parseRequest();
             clientHandlerSocket.close();
         }
     }
